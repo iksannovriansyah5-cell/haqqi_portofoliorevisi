@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<!--
+  Professional Animated Portfolio — Single HTML file
+  Author: Muhammad Khairul Haqqi
+  Note: Content & data points (name, contacts, projects, education, skills) are adapted from the user's reference file. 
+-->
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Muhammad Khairul Haqqi — Portfolio</title>
+
+  <!-- SEO -->
+  <meta name="title" content="Portfolio — Muhammad Khairul Haqqi (Graphic Designer & Animator)" />
+  <meta name="description" content="Portfolio interaktif dan penuh animasi karya Muhammad Khairul Haqqi — Graphic Designer & Animator. Proyek motion, desain buku, animasi 3D, keahlian software, pendidikan & pengalaman." />
+  <meta name="author" content="Muhammad Khairul Haqqi" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Muhammad Khairul Haqqi — Portfolio" />
+  <meta property="og:description" content="Portfolio kreatif dengan animasi GSAP: Projects, Education & Experience, Skills, Contact." />
+  <meta property="og:image" content="miuka_haqqi.png" />
+  <meta name="theme-color" content="#6D28D9" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { heading: ['Montserrat', 'ui-sans-serif', 'system-ui'], body: ['Poppins', 'ui-sans-serif', 'system-ui'] },
+          colors: {
+            ink: '#0B1020',
+            mist: '#C7D2FE',
+            primary: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              200: '#C7D2FE',
+              300: '#A5B4FC',
+              400: '#818CF8',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+              800: '#3730A3',
+              900: '#312E81',
+            },
+            violetx: '#8E2DE2',
+            indigoX: '#4A00E0'
+          },
+          boxShadow: {
+            glow: '0 10px 40px rgba(130, 87, 229, .35)',
+            glass: 'inset 0 0 0 1px rgba(255,255,255,.06)'
+          },
+          backdropBlur: { xs: '4px' }
+        }
+      }
+    }
+  </script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <!-- GSAP + ScrollTrigger (CDN) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* Base */
+    :root{
+      --glass: rgba(255,255,255,.06);
+      --ink: #0B1020;
+      --grad-a: #4A00E0;
+      --grad-b: #8E2DE2;
+    }
+    html, body{ height:100% }
+    body{ font-family: 'Poppins', sans-serif; background: var(--ink); color:#EAEAFB; }
+
+    /* Dynamic gradient background */
+    .bg-animated{
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(142,45,226,.25), transparent 70%),
+                  radial-gradient(1000px 700px at 110% 10%, rgba(74,0,224,.25), transparent 70%),
+                  linear-gradient(135deg, var(--grad-a), var(--grad-b));
+      background-attachment: fixed;
+      position: fixed; inset:0; z-index:-2;
+      filter: saturate(1.05) brightness(.9);
+    }
+    .bg-noise{
+      position: fixed; inset:0; z-index:-1; pointer-events:none; mix-blend: overlay; opacity:.12;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" opacity="0.35" width="220" height="220" viewBox="0 0 220 220"><filter id="n"><feTurbulence baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+    }
+
+    /* Glass UI helpers */
+    .glass{ background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: var(--tw-shadow), 0 1px 0 rgba(255,255,255,.04) inset; }
+
+    /* Preloader */
+    .preloader { position:fixed; inset:0; display:grid; place-items:center; background:#0B1020; z-index:9999; }
+    .bar { height:4px; width:0%; background:linear-gradient(90deg,#60A5FA,#A78BFA,#F472B6); border-radius:9999px; box-shadow:0 0 18px rgba(167,139,250,.65); }
+
+    /* Custom cursor */
+    .cursor-dot, .cursor-ring{
+      position: fixed; top:0; left:0; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%);
+      transition: opacity .25s ease;
+    }
+    .cursor-dot{ width:6px; height:6px; background:#C7D2FE; border-radius:50%; mix-blend-mode:difference; }
+    .cursor-ring{ width:28px; height:28px; border:1px solid rgba(199,210,254,.75); border-radius:50%; }
+
+    /* Modal root */
+    .modal{ position: fixed; inset: 0; display:none; place-items:center; z-index: 60; }
+    .modal.open{ display:grid; }
+
+    /* Tilt (no external library) */
+    .tilt { transform-style:preserve-3d; perspective:1000px; }
+    .tilt:hover .tilt-child{ transform: translateZ(22px); }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .cursor-dot,.cursor-ring{ display:none !important; }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-primary-500/30">
+
+  <!-- BACKGROUNDS -->
+  <div aria-hidden="true" class="bg-animated"></div>
+  <canvas id="fx" class="fixed inset-0 -z-[1] opacity-40"></canvas>
+  <div aria-hidden="true" class="bg-noise"></div>
+
+  <!-- PRELOADER -->
+  <div id="preloader" class="preloader">
+    <div class="text-center">
+      <p class="font-heading text-2xl tracking-wide text-mist/80">Loading portfolio…</p>
+      <div class="w-72 h-1.5 mt-5 mx-auto rounded-full bg-white/10 overflow-hidden">
+        <div id="bar" class="bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor-dot" id="cDot"></div>
+  <div class="cursor-ring" id="cRing"></div>
+
+  <!-- NAV -->
+  <header class="fixed top-0 inset-x-0 z-50">
+    <nav class="mx-auto max-w-7xl px-5 py-3 md:py-4">
+      <div class="glass rounded-2xl px-5 py-3 md:px-6 md:py-4 flex items-center justify-between shadow-glass">
+        <a href="#home" class="font-heading text-lg md:text-xl tracking-tight hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-400 rounded">
+          M. Khairul Haqqi
+        </a>
+        <button id="hamburger" class="md:hidden w-10 h-10 grid place-items-center rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary-400" aria-expanded="false" aria-controls="mobileMenu" aria-label="Toggle menu">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <ul class="hidden md:flex items-center gap-6 font-medium text-sm">
+          <li><a class="hover:text-mist/90" href="#projects">Projects</a></li>
+          <li><a class="hover:text-mist/90" href="#edu-exp">Education & Experience</a></li>
+          <li><a class="hover:text-mist/90" href="#skills">Skills</a></li>
+          <li><a class="hover:text-mist/90" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden mt-2 glass rounded-2xl px-5 py-4">
+        <a class="block py-2" href="#projects">Projects</a>
+        <a class="block py-2" href="#edu-exp">Education & Experience</a>
+        <a class="block py-2" href="#skills">Skills</a>
+        <a class="block py-2" href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main id="home" class="pt-28 md:pt-32">
+    <!-- HERO / INTRO -->
+    <section class="relative overflow-hidden">
+      <div class="mx-auto max-w-7xl px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs uppercase tracking-widest">
+            <span class="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> Available for freelance
+          </div>
+          <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl mt-4 leading-tight">
+            Hello, I’m <span class="text-mist">Muhammad Khairul Haqqi</span><br>
+            <span class="text-white/90">Graphic Designer & Animator</span>
+          </h1>
+          <p class="text-white/80 mt-5 leading-relaxed">
+            Siswa SMK jurusan Animasi yang fokus pada <em>motion graphics</em>, ilustrasi, dan animasi 3D. Tertarik eksplorasi tipografi kinetik, warna vibran, dan visual storytelling yang engaging. 
+          </p>
+
+          <div class="mt-7 flex flex-wrap items-center gap-3">
+            <a href="https://www.instagram.com/kaigraph_" target="_blank" class="glass rounded-xl px-4 py-2 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-400"><i class="fa-brands fa-instagram mr-2"></i>@kaigraph_</a>
+            <a href="https://wa.me/6289503953245" target="_blank" class="glass rounded-xl px-4 py-2 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-400"><i class="fa-brands fa-whatsapp mr-2"></i>+62 895-0395-3245</a>
+            <a href="mailto:mkhairulhaqqi25@gmail.com" class="glass rounded-xl px-4 py-2 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary-400"><i class="fa-regular fa-envelope mr-2"></i>mkhairulhaqqi25@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="justify-self-center">
+          <div class="relative w-56 h-56 md:w-72 md:h-72 rounded-3xl overflow-hidden ring-1 ring-white/10 shadow-glow tilt">
+            <img src="miuka_haqqi.png" alt="Foto profil Muhammad Khairul Haqqi" class="tilt-child w-full h-full object-cover" loading="eager" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            <div class="absolute bottom-3 left-3 text-sm glass rounded-lg px-3 py-1.5">
+              <i class="fa-solid fa-location-dot mr-2"></i>Indonesia
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parallax decor -->
+      <div aria-hidden="true" class="pointer-events-none">
+        <div class="absolute -top-24 -left-24 w-[28rem] h-[28rem] rounded-full blur-3xl opacity-30 bg-primary-400/30"></div>
+        <div class="absolute -bottom-28 -right-24 w-[32rem] h-[32rem] rounded-full blur-3xl opacity-30 bg-violetx/30"></div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="relative py-20 md:py-28">
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="flex items-end justify-between gap-6">
+          <h2 class="font-heading text-3xl sm:text-4xl">Featured Projects</h2>
+          <span class="text-white/70 text-sm">Hover & click cards for details</span>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7 mt-10">
+          <!-- Project 1 -->
+          <article class="group glass rounded-2xl overflow-hidden shadow-glow border border-white/5 tilt project" data-project="p1">
+            <div class="relative">
+              <img src="p_1.jpg" alt="Motion Graphic: Ain't It Fun — After Effects" class="w-full h-56 object-cover" loading="lazy">
+              <span class="absolute top-3 left-3 text-xs glass px-2.5 py-1 rounded-full">After Effects</span>
+              <span class="absolute bottom-3 right-3 text-xs glass px-2.5 py-1 rounded-full">Motion Graphic</span>
+            </div>
+            <div class="p-5">
+              <h3 class="font-heading text-xl">Ain’t It Fun — Kinetic Type</h3>
+              <p class="text-white/75 mt-2">Eksperimen tipografi kinetik sinkron musik, fokus pada timing & easing untuk punchy beats. </p>
+              <div class="mt-4 flex items-center justify-between">
+                <button class="px-3.5 py-2 rounded-lg bg-primary-600 hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300 open-modal" data-target="#modal-p1">
+                  View Details
+                </button>
+                <a class="text-sm opacity-80 hover:opacity-100 underline underline-offset-4"
+                   href="https://www.instagram.com/reel/DMFluOsAXvd/" target="_blank" rel="noopener">Instagram</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 2 -->
+          <article class="group glass rounded-2xl overflow-hidden shadow-glow border border-white/5 tilt project" data-project="p2">
+            <div class="relative">
+              <img src="p_2.jpg" alt="Cover Book — Ibis Paint & Illustrator" class="w-full h-56 object-cover" loading="lazy">
+              <span class="absolute top-3 left-3 text-xs glass px-2.5 py-1 rounded-full">Ibis Paint · Illustrator</span>
+              <span class="absolute bottom-3 right-3 text-xs glass px-2.5 py-1 rounded-full">Illustration</span>
+            </div>
+            <div class="p-5">
+              <h3 class="font-heading text-xl">Cover Book — Visual Narrative</h3>
+              <p class="text-white/75 mt-2">Eksplorasi komposisi, hirarki, dan palet warna untuk sampul buku bergaya editorial modern. </p>
+              <div class="mt-4 flex items-center justify-between">
+                <button class="px-3.5 py-2 rounded-lg bg-primary-600 hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300 open-modal" data-target="#modal-p2">
+                  View Details
+                </button>
+                <a class="text-sm opacity-80 hover:opacity-100 underline underline-offset-4"
+                   href="https://www.instagram.com/p/DNYATTNvgdK/" target="_blank" rel="noopener">Instagram</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 3 -->
+          <article class="group glass rounded-2xl overflow-hidden shadow-glow border border-white/5 tilt project" data-project="p3">
+            <div class="relative">
+              <img src="p_3.jpg" alt="Parfume Animation — Blender & CapCut" class="w-full h-56 object-cover" loading="lazy">
+              <span class="absolute top-3 left-3 text-xs glass px-2.5 py-1 rounded-full">Blender · CapCut</span>
+              <span class="absolute bottom-3 right-3 text-xs glass px-2.5 py-1 rounded-full">3D Animation</span>
+            </div>
+            <div class="p-5">
+              <h3 class="font-heading text-xl">Perfume Product Animation</h3>
+              <p class="text-white/75 mt-2">Simulasi lighting & material kaca, kamera parallax untuk look yang premium & glossy. </p>
+              <div class="mt-4 flex items-center justify-between">
+                <button class="px-3.5 py-2 rounded-lg bg-primary-600 hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300 open-modal" data-target="#modal-p3">
+                  View Details
+                </button>
+                <a class="text-sm opacity-80 hover:opacity-100 underline underline-offset-4"
+                   href="https://www.instagram.com/reel/DJTI4XhAgZ3/" target="_blank" rel="noopener">Instagram</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION & EXPERIENCE -->
+    <section id="edu-exp" class="py-20 md:py-28">
+      <div class="mx-auto max-w-7xl px-6">
+        <h2 class="font-heading text-3xl sm:text-4xl">Education & Experience</h2>
+        <div class="mt-10 grid lg:grid-cols-2 gap-10">
+          <!-- Education -->
+          <div class="glass rounded-2xl p-7">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-graduation-cap text-primary-300"></i>
+              <h3 class="font-heading text-xl">Education</h3>
+            </div>
+            <ol class="relative border-l border-white/10 mt-6 space-y-8 pl-6">
+              <li>
+                <div class="absolute -left-2 top-0 w-3 h-3 rounded-full bg-primary-400"></div>
+                <p class="text-white/85 font-semibold">SMK Taruna Bhakti — Jurusan Animasi <span class="text-white/60">(2024–2025)</span></p>
+                <p class="text-white/70 mt-1">Fokus pada pipeline animasi, desain, dan produksi konten kreatif. </p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Experience -->
+          <div class="glass rounded-2xl p-7">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-briefcase text-primary-300"></i>
+              <h3 class="font-heading text-xl">Experience</h3>
+            </div>
+            <ul class="mt-6 space-y-5">
+              <li>
+                <p class="font-semibold">Freelance Graphic Designer <span class="text-white/60">— 2023–sekarang</span></p>
+                <p class="text-white/70">Sosial media design & banner komersial untuk UMKM. </p>
+              </li>
+              <li>
+                <p class="font-semibold">Motion/Animation Junior</p>
+                <p class="text-white/70">Juara 1 bootcamp animasi SMK Taruna Bhakti Depok (2025). </p>
+              </li>
+              <li>
+                <p class="font-semibold">Student Project</p>
+                <p class="text-white/70">Kolaborasi tim: brand kit & key visual sekolah. </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="py-20 md:py-28">
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="flex items-end justify-between gap-6">
+          <h2 class="font-heading text-3xl sm:text-4xl">Software Skills</h2>
+          <span class="text-white/70 text-sm">Hover icons • Progress animates</span>
+        </div>
+
+        <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+          <!-- Blender -->
+          <div class="glass rounded-2xl p-5 text-center group">
+            <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Blender_logo_no_text.svg/512px-Blender_logo_no_text.svg.png" alt="Blender" loading="lazy">
+            <p class="mt-3 font-medium">Blender</p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+            </div>
+          </div>
+          <!-- Illustrator -->
+          <div class="glass rounded-2xl p-5 text-center group">
+            <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/f/fb/Adobe_Illustrator_CC_icon.svg" alt="Illustrator" loading="lazy">
+            <p class="mt-3 font-medium">Illustrator</p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+            </div>
+          </div>
+          <!-- Figma -->
+          <div class="glass rounded-2xl p-5 text-center group">
+            <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg" alt="Figma" loading="lazy">
+            <p class="mt-3 font-medium">Figma</p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+            </div>
+          </div>
+          <!-- After Effects -->
+          <div class="glass rounded-2xl p-5 text-center group">
+            <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Adobe_After_Effects_CC_icon.svg" alt="After Effects" loading="lazy">
+            <p class="mt-3 font-medium">After Effects</p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+            </div>
+          </div>
+          <!-- Photoshop -->
+          <div class="glass rounded-2xl p-5 text-center group">
+            <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg" alt="Photoshop" loading="lazy">
+            <p class="mt-3 font-medium">Photoshop</p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+            </div>
+          </div>
+          <!-- Premiere Pro -->
+          <div class="glass rounded-2xl p-5 text-center group">
+            <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/4/40/Adobe_Premiere_Pro_CC_icon.svg" alt="Premiere Pro" loading="lazy">
+            <p class="mt-3 font-medium">Premiere Pro</p>
+            <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT / FOOTER -->
+    <section id="contact" class="py-20 md:py-28">
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="grid lg:grid-cols-2 gap-10">
+          <div class="glass rounded-2xl p-7">
+            <h2 class="font-heading text-3xl sm:text-4xl">Let’s Collaborate</h2>
+            <p class="text-white/80 mt-3">Tertarik bekerja sama untuk project desain atau animasi? Kirim pesan lewat formulir atau kontak langsung di atas.</p>
+
+            <form class="mt-6 grid gap-4" onsubmit="event.preventDefault(); openThanks();">
+              <label class="block">
+                <span class="text-sm text-white/70">Nama</span>
+                <input class="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-primary-400" type="text" name="name" placeholder="Nama Anda" required>
+              </label>
+              <label class="block">
+                <span class="text-sm text-white/70">Email</span>
+                <input class="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-primary-400" type="email" name="email" placeholder="email@domain.com" required>
+              </label>
+              <label class="block">
+                <span class="text-sm text-white/70">Pesan</span>
+                <textarea class="mt-2 w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 outline-none focus:ring-2 focus:ring-primary-400" rows="4" name="message" placeholder="Halo, mari diskusi project…" required></textarea>
+              </label>
+              <button class="justify-self-start px-5 py-3 rounded-xl bg-primary-600 hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300">
+                Send Message
+              </button>
+            </form>
+          </div>
+
+          <div class="glass rounded-2xl p-7">
+            <h3 class="font-heading text-2xl">Quick Links</h3>
+            <ul class="mt-5 space-y-3">
+              <li><a class="hover:underline underline-offset-4" href="#projects">Projects</a></li>
+              <li><a class="hover:underline underline-offset-4" href="#edu-exp">Education & Experience</a></li>
+              <li><a class="hover:underline underline-offset-4" href="#skills">Skills</a></li>
+            </ul>
+            <p class="mt-6 text-white/70 text-sm">© <span id="year"></span> Muhammad Khairul Haqqi. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODALS -->
+  <div id="modal-p1" class="modal">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="relative z-10 max-w-2xl w-[92%] glass rounded-2xl p-6 md:p-8">
+      <div class="flex items-start justify-between gap-6">
+        <h4 class="font-heading text-2xl">Ain’t It Fun — Kinetic Type</h4>
+        <button class="close-modal w-10 h-10 grid place-items-center rounded-lg hover:bg-white/10" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="mt-3 text-white/80">Motion graphic pertama dengan fokus sinkronisasi ritme, typographic accents, dan efek glow halus di After Effects.</p>
+      <a class="inline-block mt-5 px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-500" href="https://www.instagram.com/reel/DMFluOsAXvd/" target="_blank" rel="noopener">Lihat di Instagram</a>
+    </div>
+  </div>
+
+  <div id="modal-p2" class="modal">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="relative z-10 max-w-2xl w-[92%] glass rounded-2xl p-6 md:p-8">
+      <div class="flex items-start justify-between gap-6">
+        <h4 class="font-heading text-2xl">Cover Book — Visual Narrative</h4>
+        <button class="close-modal w-10 h-10 grid place-items-center rounded-lg hover:bg-white/10" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="mt-3 text-white/80">Cover dengan grid modular, fokus hierarchy & readability, memadukan brushwork Ibis Paint dan vector refinement di Illustrator.</p>
+      <a class="inline-block mt-5 px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-500" href="https://www.instagram.com/p/DNYATTNvgdK/" target="_blank" rel="noopener">Lihat di Instagram</a>
+    </div>
+  </div>
+
+  <div id="modal-p3" class="modal">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="relative z-10 max-w-2xl w-[92%] glass rounded-2xl p-6 md:p-8">
+      <div class="flex items-start justify-between gap-6">
+        <h4 class="font-heading text-2xl">Perfume Product Animation</h4>
+        <button class="close-modal w-10 h-10 grid place-items-center rounded-lg hover:bg-white/10" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="mt-3 text-white/80">Animasi showcase produk parfum dengan material kaca PBR, depth-of-field halus, dan parallax camera untuk nuansa premium.</p>
+      <a class="inline-block mt-5 px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-500" href="https://www.instagram.com/reel/DJTI4XhAgZ3/" target="_blank" rel="noopener">Lihat di Instagram</a>
+    </div>
+  </div>
+
+  <!-- JS (vanilla + GSAP) -->
+  <script>
+  // ===== Utilities =====
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ===== Preloader =====
+  window.addEventListener('DOMContentLoaded', () => {
+    const bar = $('#bar');
+    const pre = $('#preloader');
+    if (prefersReduced) { pre.remove(); return; }
+
+    gsap.to(bar, { width: '100%', duration: 1.2, ease: 'power2.out' });
+    const tl = gsap.timeline({ delay: 1.25 });
+    tl.to(pre, { yPercent: -100, ease: 'power4.inOut', duration: 1 })
+      .set(pre, { display: 'none' });
+  });
+
+  // Year
+  $('#year').textContent = new Date().getFullYear();
+
+  // ===== Mobile Nav =====
+  const burger = $('#hamburger');
+  const mobileMenu = $('#mobileMenu');
+  burger?.addEventListener('click', () => {
+    const expanded = burger.getAttribute('aria-expanded') === 'true';
+    burger.setAttribute('aria-expanded', String(!expanded));
+    mobileMenu.classList.toggle('hidden');
+  });
+  $$('#mobileMenu a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+  // ===== Custom cursor =====
+  const cDot = $('#cDot'), cRing = $('#cRing');
+  let mx = window.innerWidth/2, my = window.innerHeight/2, rx = mx, ry = my;
+  const move = e => { mx = e.clientX; my = e.clientY; };
+  window.addEventListener('mousemove', move, { passive:true });
+  function raf(){
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    cDot.style.transform = `translate(${mx}px,${my}px)`;
+    cRing.style.transform = `translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(raf);
+  }
+  if(!prefersReduced){ raf(); }
+
+  // ===== Canvas particles (lightweight) =====
+  const canvas = $('#fx');
+  const ctx = canvas.getContext('2d');
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  let W, H, P = [];
+  function resize(){
+    W = canvas.width = innerWidth * DPR;
+    H = canvas.height = innerHeight * DPR;
+  }
+  function spawn(){
+    P = [];
+    for(let i=0;i<45;i++){
+      P.push({ x: Math.random()*W, y: Math.random()*H, r: 1+Math.random()*2, vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3, a: .25+.35*Math.random() });
+    }
+  }
+  function loop(){
+    if(prefersReduced) return;
+    ctx.clearRect(0,0,W,H);
+    for(const p of P){
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(199,210,254,${p.a})`;
+      ctx.arc(p.x, p.y, p.r*DPR, 0, Math.PI*2);
+      ctx.fill();
+    }
+    requestAnimationFrame(loop);
+  }
+  resize(); spawn(); loop();
+  addEventListener('resize', () => { resize(); spawn(); });
+
+  // ===== GSAP Animations =====
+  window.addEventListener('load', () => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero text stagger
+    if(!prefersReduced){
+      gsap.from('h1 span, h1', { opacity:0, y:20, duration:.9, ease:'power3.out', stagger:.06 });
+      gsap.from('.tilt', { opacity:0, scale:.96, duration:.9, ease:'power3.out' });
+    }
+
+    // Sections reveal
+    const reveal = gsap.utils.toArray('section');
+    reveal.forEach((sec, i) => {
+      ScrollTrigger.create({
+        trigger: sec, start: 'top 70%',
+        onEnter: () => !prefersReduced && gsap.fromTo(sec, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .9, ease: 'power3.out' })
+      });
+    });
+
+    // Parallax background spots
+    gsap.to('.bg-animated', {
+      backgroundPosition: '20% 0, 80% 0, 0 0',
+      ease: 'none', scrollTrigger: { scrub: 1 }
+    });
+
+    // Projects hover tilt (vanilla)
+    $$('.tilt').forEach(card => {
+      let b = card.getBoundingClientRect();
+      const onMove = (e) => {
+        const x = (e.clientX - b.left) / b.width - .5;
+        const y = (e.clientY - b.top) / b.height - .5;
+        card.style.transform = `perspective(1000px) rotateX(${ -y * 6 }deg) rotateY(${ x * 6 }deg) translateZ(0)`;
+      };
+      const reset = () => card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+      card.addEventListener('mouseenter', () => b = card.getBoundingClientRect());
+      card.addEventListener('mousemove', onMove);
+      card.addEventListener('mouseleave', reset);
+    });
+
+    // Skills progress fill
+    $$('.progress').forEach((bar, i) => {
+      const target = [90, 85, 80, 88, 82, 78][i % 6]; // sample percentages
+      ScrollTrigger.create({
+        trigger: bar, start: 'top 80%',
+        onEnter: () => !prefersReduced && gsap.to(bar, { width: `${target}%`, duration: 1.2, ease: 'power3.out' })
+      });
+    });
+
+    // Modals animation
+    const openButtons = $$('.open-modal');
+    const closeButtons = $$('.close-modal');
+    const modals = $$('.modal');
+
+    const timelines = new Map();
+    modals.forEach(m => {
+      const panel = m.querySelector('.relative.z-10');
+      const backdrop = m.firstElementChild;
+      const tl = gsap.timeline({ paused:true, defaults:{ ease: 'power3.out', duration:.6 }})
+        .set(m, { display:'grid' })
+        .fromTo(backdrop, { opacity:0 }, { opacity:1, duration:.4 }, 0)
+        .fromTo(panel, { y: 24, opacity:0, scale:.96 }, { y:0, opacity:1, scale:1 }, 0);
+      timelines.set(m.id, tl);
+    });
+
+    function openModal(sel){ const tl = timelines.get(sel.slice(1)); tl && tl.play(0); }
+    function closeModal(el){ const tl = timelines.get(el.id); tl && tl.reverse(); }
+
+    openButtons.forEach(btn => btn.addEventListener('click', e => {
+      const target = e.currentTarget.getAttribute('data-target');
+      openModal(target);
+    }));
+    closeButtons.forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.closest('.modal'))));
+    modals.forEach(m => m.addEventListener('click', e => (e.target === m) && closeModal(m)));
+
+    // Button press micro-interaction
+    $$('button, .open-modal').forEach(b=>{
+      b.addEventListener('mousedown', () => gsap.to(b, { y:1.5, scale:.99, duration:.08 }));
+      b.addEventListener('mouseup',   () => gsap.to(b, { y:0, scale:1,   duration:.12 }));
+      b.addEventListener('mouseleave',() => gsap.to(b, { y:0, scale:1,   duration:.12 }));
+    });
+
+    // Cursor grow on interactive elements
+    $$('a, button, .project').forEach(el=>{
+      el.addEventListener('mouseenter', ()=> { cRing.style.transform += ' scale(1.35)'; cRing.style.borderColor = '#A5B4FC'; });
+      el.addEventListener('mouseleave', ()=> { cRing.style.transform = cRing.style.transform.replace(' scale(1.35)',''); cRing.style.borderColor = 'rgba(199,210,254,.75)'; });
+    });
+  });
+
+  // Contact form "thanks"
+  function openThanks(){
+    const temp = document.createElement('div');
+    temp.className = 'modal open';
+    temp.innerHTML = `
+      <div class="absolute inset-0 bg-black/60"></div>
+      <div class="relative z-10 max-w-md w-[92%] glass rounded-2xl p-6 text-center">
+        <h4 class="font-heading text-2xl">Thanks! 🎉</h4>
+        <p class="mt-2 text-white/80">Pesan Anda siap diproses. Saya akan membalas secepatnya.</p>
+        <button class="mt-5 px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-500">Close</button>
+      </div>`;
+    document.body.appendChild(temp);
+    const btn = temp.querySelector('button');
+    const backdrop = temp.firstElementChild;
+    const tl = gsap.timeline({ defaults:{ ease:'power3.out' }})
+      .fromTo(backdrop,{ opacity:0 },{ opacity:1, duration:.4 },0)
+      .fromTo(temp.querySelector('.relative'),{ y:24, opacity:0, scale:.96 },{ y:0, opacity:1, scale:1, duration:.6 },0);
+    const close = ()=> gsap.to(temp, { opacity:0, duration:.3, onComplete(){ temp.remove(); }});
+    btn.addEventListener('click', close);
+    temp.addEventListener('click', e => (e.target===temp) && close());
+  }
+  </script>
+</body>
+</html>
