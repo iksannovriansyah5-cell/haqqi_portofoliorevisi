@@ -1,16 +1,10 @@
 <!DOCTYPE html>
-<!--
-  Professional Animated Portfolio — Single HTML file
-  Author: Muhammad Khairul Haqqi
-  Note: Content & data points (name, contacts, projects, education, skills) are adapted from the user's reference file. 
--->
 <html lang="id" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Muhammad Khairul Haqqi — Portfolio</title>
 
-  <!-- SEO -->
   <meta name="title" content="Portfolio — Muhammad Khairul Haqqi (Graphic Designer & Animator)" />
   <meta name="description" content="Portfolio interaktif dan penuh animasi karya Muhammad Khairul Haqqi — Graphic Designer & Animator. Proyek motion, desain buku, animasi 3D, keahlian software, pendidikan & pengalaman." />
   <meta name="author" content="Muhammad Khairul Haqqi" />
@@ -20,14 +14,12 @@
   <meta property="og:image" content="miuka_haqqi.png" />
   <meta name="theme-color" content="#6D28D9" />
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 
-  <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -62,10 +54,8 @@
     }
   </script>
 
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-  <!-- GSAP + ScrollTrigger (CDN) -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
@@ -101,7 +91,7 @@
     .preloader { position:fixed; inset:0; display:grid; place-items:center; background:#0B1020; z-index:9999; }
     .bar { height:4px; width:0%; background:linear-gradient(90deg,#60A5FA,#A78BFA,#F472B6); border-radius:9999px; box-shadow:0 0 18px rgba(167,139,250,.65); }
 
-    /* Custom cursor */
+    /* Custom cursor (hanya di desktop) */
     .cursor-dot, .cursor-ring{
       position: fixed; top:0; left:0; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%);
       transition: opacity .25s ease;
@@ -117,20 +107,20 @@
     .tilt { transform-style:preserve-3d; perspective:1000px; }
     .tilt:hover .tilt-child{ transform: translateZ(22px); }
 
-    /* Reduce motion */
-    @media (prefers-reduced-motion: reduce){
-      .cursor-dot,.cursor-ring{ display:none !important; }
+    /* Reduksi gerak & mobile optimizations */
+    @media (prefers-reduced-motion: reduce), (max-width: 768px){
+      .cursor-dot, .cursor-ring{ display:none !important; }
+      .bg-animated { background-attachment: scroll; }
     }
+    .progress { transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
   </style>
 </head>
 <body class="antialiased selection:bg-primary-500/30">
 
-  <!-- BACKGROUNDS -->
   <div aria-hidden="true" class="bg-animated"></div>
   <canvas id="fx" class="fixed inset-0 -z-[1] opacity-40"></canvas>
   <div aria-hidden="true" class="bg-noise"></div>
 
-  <!-- PRELOADER -->
   <div id="preloader" class="preloader">
     <div class="text-center">
       <p class="font-heading text-2xl tracking-wide text-mist/80">Loading portfolio…</p>
@@ -140,11 +130,9 @@
     </div>
   </div>
 
-  <!-- CUSTOM CURSOR -->
-  <div class="cursor-dot" id="cDot"></div>
-  <div class="cursor-ring" id="cRing"></div>
+  <div class="cursor-dot md:block hidden" id="cDot"></div>
+  <div class="cursor-ring md:block hidden" id="cRing"></div>
 
-  <!-- NAV -->
   <header class="fixed top-0 inset-x-0 z-50">
     <nav class="mx-auto max-w-7xl px-5 py-3 md:py-4">
       <div class="glass rounded-2xl px-5 py-3 md:px-6 md:py-4 flex items-center justify-between shadow-glass">
@@ -170,9 +158,7 @@
     </nav>
   </header>
 
-  <!-- MAIN -->
   <main id="home" class="pt-28 md:pt-32">
-    <!-- HERO / INTRO -->
     <section class="relative overflow-hidden">
       <div class="mx-auto max-w-7xl px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center">
         <div>
@@ -184,7 +170,7 @@
             <span class="text-white/90">Graphic Designer & Animator</span>
           </h1>
           <p class="text-white/80 mt-5 leading-relaxed">
-            Siswa SMK jurusan Animasi yang fokus pada <em>motion graphics</em>, ilustrasi, dan animasi 3D. Tertarik eksplorasi tipografi kinetik, warna vibran, dan visual storytelling yang engaging. 
+            Siswa SMK jurusan Animasi yang fokus pada <em>motion graphics</em>, ilustrasi, dan animasi 3D. Tertarik eksplorasi tipografi kinetik, warna vibran, dan visual storytelling yang engaging.
           </p>
 
           <div class="mt-7 flex flex-wrap items-center gap-3">
@@ -205,23 +191,20 @@
         </div>
       </div>
 
-      <!-- Parallax decor -->
       <div aria-hidden="true" class="pointer-events-none">
         <div class="absolute -top-24 -left-24 w-[28rem] h-[28rem] rounded-full blur-3xl opacity-30 bg-primary-400/30"></div>
         <div class="absolute -bottom-28 -right-24 w-[32rem] h-[32rem] rounded-full blur-3xl opacity-30 bg-violetx/30"></div>
       </div>
     </section>
 
-    <!-- PROJECTS -->
     <section id="projects" class="relative py-20 md:py-28">
       <div class="mx-auto max-w-7xl px-6">
         <div class="flex items-end justify-between gap-6">
           <h2 class="font-heading text-3xl sm:text-4xl">Featured Projects</h2>
-          <span class="text-white/70 text-sm">Hover & click cards for details</span>
+          <span class="text-white/70 text-sm md:block hidden">Hover & click cards for details</span>
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7 mt-10">
-          <!-- Project 1 -->
           <article class="group glass rounded-2xl overflow-hidden shadow-glow border border-white/5 tilt project" data-project="p1">
             <div class="relative">
               <img src="p_1.jpg" alt="Motion Graphic: Ain't It Fun — After Effects" class="w-full h-56 object-cover" loading="lazy">
@@ -241,7 +224,6 @@
             </div>
           </article>
 
-          <!-- Project 2 -->
           <article class="group glass rounded-2xl overflow-hidden shadow-glow border border-white/5 tilt project" data-project="p2">
             <div class="relative">
               <img src="p_2.jpg" alt="Cover Book — Ibis Paint & Illustrator" class="w-full h-56 object-cover" loading="lazy">
@@ -261,7 +243,6 @@
             </div>
           </article>
 
-          <!-- Project 3 -->
           <article class="group glass rounded-2xl overflow-hidden shadow-glow border border-white/5 tilt project" data-project="p3">
             <div class="relative">
               <img src="p_3.jpg" alt="Parfume Animation — Blender & CapCut" class="w-full h-56 object-cover" loading="lazy">
@@ -284,12 +265,10 @@
       </div>
     </section>
 
-    <!-- EDUCATION & EXPERIENCE -->
     <section id="edu-exp" class="py-20 md:py-28">
       <div class="mx-auto max-w-7xl px-6">
         <h2 class="font-heading text-3xl sm:text-4xl">Education & Experience</h2>
         <div class="mt-10 grid lg:grid-cols-2 gap-10">
-          <!-- Education -->
           <div class="glass rounded-2xl p-7">
             <div class="flex items-center gap-3">
               <i class="fa-solid fa-graduation-cap text-primary-300"></i>
@@ -304,7 +283,6 @@
             </ol>
           </div>
 
-          <!-- Experience -->
           <div class="glass rounded-2xl p-7">
             <div class="flex items-center gap-3">
               <i class="fa-solid fa-briefcase text-primary-300"></i>
@@ -329,68 +307,60 @@
       </div>
     </section>
 
-    <!-- SKILLS -->
     <section id="skills" class="py-20 md:py-28">
       <div class="mx-auto max-w-7xl px-6">
         <div class="flex items-end justify-between gap-6">
           <h2 class="font-heading text-3xl sm:text-4xl">Software Skills</h2>
-          <span class="text-white/70 text-sm">Hover icons • Progress animates</span>
+          <span class="text-white/70 text-sm">Progress animates</span>
         </div>
 
         <div class="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-          <!-- Blender -->
           <div class="glass rounded-2xl p-5 text-center group">
             <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Blender_logo_no_text.svg/512px-Blender_logo_no_text.svg.png" alt="Blender" loading="lazy">
             <p class="mt-3 font-medium">Blender</p>
             <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+              <div class="progress h-full bg-gradient-to-r from-primary-400 to-violetx" data-progress="90"></div>
             </div>
           </div>
-          <!-- Illustrator -->
           <div class="glass rounded-2xl p-5 text-center group">
             <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/f/fb/Adobe_Illustrator_CC_icon.svg" alt="Illustrator" loading="lazy">
             <p class="mt-3 font-medium">Illustrator</p>
             <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+              <div class="progress h-full bg-gradient-to-r from-primary-400 to-violetx" data-progress="85"></div>
             </div>
           </div>
-          <!-- Figma -->
           <div class="glass rounded-2xl p-5 text-center group">
             <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg" alt="Figma" loading="lazy">
             <p class="mt-3 font-medium">Figma</p>
             <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+              <div class="progress h-full bg-gradient-to-r from-primary-400 to-violetx" data-progress="80"></div>
             </div>
           </div>
-          <!-- After Effects -->
           <div class="glass rounded-2xl p-5 text-center group">
             <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Adobe_After_Effects_CC_icon.svg" alt="After Effects" loading="lazy">
             <p class="mt-3 font-medium">After Effects</p>
             <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+              <div class="progress h-full bg-gradient-to-r from-primary-400 to-violetx" data-progress="88"></div>
             </div>
           </div>
-          <!-- Photoshop -->
           <div class="glass rounded-2xl p-5 text-center group">
             <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg" alt="Photoshop" loading="lazy">
             <p class="mt-3 font-medium">Photoshop</p>
             <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+              <div class="progress h-full bg-gradient-to-r from-primary-400 to-violetx" data-progress="82"></div>
             </div>
           </div>
-          <!-- Premiere Pro -->
           <div class="glass rounded-2xl p-5 text-center group">
             <img class="mx-auto w-14 h-14" src="https://upload.wikimedia.org/wikipedia/commons/4/40/Adobe_Premiere_Pro_CC_icon.svg" alt="Premiere Pro" loading="lazy">
             <p class="mt-3 font-medium">Premiere Pro</p>
             <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-              <div class="progress h-full w-0 bg-gradient-to-r from-primary-400 to-violetx"></div>
+              <div class="progress h-full bg-gradient-to-r from-primary-400 to-violetx" data-progress="78"></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CONTACT / FOOTER -->
     <section id="contact" class="py-20 md:py-28">
       <div class="mx-auto max-w-7xl px-6">
         <div class="grid lg:grid-cols-2 gap-10">
@@ -431,7 +401,6 @@
     </section>
   </main>
 
-  <!-- MODALS -->
   <div id="modal-p1" class="modal">
     <div class="absolute inset-0 bg-black/60"></div>
     <div class="relative z-10 max-w-2xl w-[92%] glass rounded-2xl p-6 md:p-8">
@@ -468,20 +437,20 @@
     </div>
   </div>
 
-  <!-- JS (vanilla + GSAP) -->
   <script>
   // ===== Utilities =====
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => Array.from(root.querySelectorAll(s));
-
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.innerWidth <= 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ===== Preloader =====
   window.addEventListener('DOMContentLoaded', () => {
     const bar = $('#bar');
     const pre = $('#preloader');
-    if (prefersReduced) { pre.remove(); return; }
-
+    if (isMobile) {
+      pre.remove();
+      return;
+    }
     gsap.to(bar, { width: '100%', duration: 1.2, ease: 'power2.out' });
     const tl = gsap.timeline({ delay: 1.25 });
     tl.to(pre, { yPercent: -100, ease: 'power4.inOut', duration: 1 })
@@ -501,76 +470,79 @@
   });
   $$('#mobileMenu a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
 
-  // ===== Custom cursor =====
-  const cDot = $('#cDot'), cRing = $('#cRing');
-  let mx = window.innerWidth/2, my = window.innerHeight/2, rx = mx, ry = my;
-  const move = e => { mx = e.clientX; my = e.clientY; };
-  window.addEventListener('mousemove', move, { passive:true });
-  function raf(){
-    rx += (mx - rx) * 0.15;
-    ry += (my - ry) * 0.15;
-    cDot.style.transform = `translate(${mx}px,${my}px)`;
-    cRing.style.transform = `translate(${rx}px,${ry}px)`;
-    requestAnimationFrame(raf);
+  // ===== Custom cursor (hanya untuk desktop) =====
+  if (!isMobile) {
+    const cDot = $('#cDot'), cRing = $('#cRing');
+    let mx = window.innerWidth/2, my = window.innerHeight/2, rx = mx, ry = my;
+    const move = e => { mx = e.clientX; my = e.clientY; };
+    window.addEventListener('mousemove', move, { passive:true });
+    function raf(){
+      rx += (mx - rx) * 0.15;
+      ry += (my - ry) * 0.15;
+      cDot.style.transform = `translate(${mx}px,${my}px)`;
+      cRing.style.transform = `translate(${rx}px,${ry}px)`;
+      requestAnimationFrame(raf);
+    }
+    raf();
+    $$('a, button, .project').forEach(el=>{
+      el.addEventListener('mouseenter', ()=> { cRing.style.transform += ' scale(1.35)'; cRing.style.borderColor = '#A5B4FC'; });
+      el.addEventListener('mouseleave', ()=> { cRing.style.transform = cRing.style.transform.replace(' scale(1.35)',''); cRing.style.borderColor = 'rgba(199,210,254,.75)'; });
+    });
   }
-  if(!prefersReduced){ raf(); }
 
   // ===== Canvas particles (lightweight) =====
   const canvas = $('#fx');
-  const ctx = canvas.getContext('2d');
-  const DPR = Math.min(window.devicePixelRatio || 1, 2);
-  let W, H, P = [];
-  function resize(){
-    W = canvas.width = innerWidth * DPR;
-    H = canvas.height = innerHeight * DPR;
-  }
-  function spawn(){
-    P = [];
-    for(let i=0;i<45;i++){
-      P.push({ x: Math.random()*W, y: Math.random()*H, r: 1+Math.random()*2, vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3, a: .25+.35*Math.random() });
+  if(!isMobile) {
+    const ctx = canvas.getContext('2d');
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    let W, H, P = [];
+    function resize(){
+      W = canvas.width = innerWidth * DPR;
+      H = canvas.height = innerHeight * DPR;
     }
-  }
-  function loop(){
-    if(prefersReduced) return;
-    ctx.clearRect(0,0,W,H);
-    for(const p of P){
-      p.x += p.vx; p.y += p.vy;
-      if(p.x<0||p.x>W) p.vx*=-1;
-      if(p.y<0||p.y>H) p.vy*=-1;
-      ctx.beginPath();
-      ctx.fillStyle = `rgba(199,210,254,${p.a})`;
-      ctx.arc(p.x, p.y, p.r*DPR, 0, Math.PI*2);
-      ctx.fill();
+    function spawn(){
+      P = [];
+      for(let i=0;i<45;i++){
+        P.push({ x: Math.random()*W, y: Math.random()*H, r: 1+Math.random()*2, vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3, a: .25+.35*Math.random() });
+      }
     }
-    requestAnimationFrame(loop);
+    function loop(){
+      ctx.clearRect(0,0,W,H);
+      for(const p of P){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x<0||p.x>W) p.vx*=-1;
+        if(p.y<0||p.y>H) p.vy*=-1;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(199,210,254,${p.a})`;
+        ctx.arc(p.x, p.y, p.r*DPR, 0, Math.PI*2);
+        ctx.fill();
+      }
+      requestAnimationFrame(loop);
+    }
+    resize(); spawn(); loop();
+    addEventListener('resize', () => { resize(); spawn(); });
+  } else {
+    canvas.remove();
   }
-  resize(); spawn(); loop();
-  addEventListener('resize', () => { resize(); spawn(); });
 
-  // ===== GSAP Animations =====
+  // ===== GSAP Animations (hanya untuk desktop) =====
   window.addEventListener('load', () => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Hero text stagger
-    if(!prefersReduced){
+    if (!isMobile) {
+      gsap.registerPlugin(ScrollTrigger);
       gsap.from('h1 span, h1', { opacity:0, y:20, duration:.9, ease:'power3.out', stagger:.06 });
       gsap.from('.tilt', { opacity:0, scale:.96, duration:.9, ease:'power3.out' });
-    }
-
-    // Sections reveal
-    const reveal = gsap.utils.toArray('section');
-    reveal.forEach((sec, i) => {
-      ScrollTrigger.create({
-        trigger: sec, start: 'top 70%',
-        onEnter: () => !prefersReduced && gsap.fromTo(sec, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .9, ease: 'power3.out' })
+      const reveal = gsap.utils.toArray('section');
+      reveal.forEach((sec, i) => {
+        ScrollTrigger.create({
+          trigger: sec, start: 'top 70%',
+          onEnter: () => gsap.fromTo(sec, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .9, ease: 'power3.out' })
+        });
       });
-    });
-
-    // Parallax background spots
-    gsap.to('.bg-animated', {
-      backgroundPosition: '20% 0, 80% 0, 0 0',
-      ease: 'none', scrollTrigger: { scrub: 1 }
-    });
+      gsap.to('.bg-animated', {
+        backgroundPosition: '20% 0, 80% 0, 0 0',
+        ease: 'none', scrollTrigger: { scrub: 1 }
+      });
+    }
 
     // Projects hover tilt (vanilla)
     $$('.tilt').forEach(card => {
@@ -586,14 +558,19 @@
       card.addEventListener('mouseleave', reset);
     });
 
-    // Skills progress fill
-    $$('.progress').forEach((bar, i) => {
-      const target = [90, 85, 80, 88, 82, 78][i % 6]; // sample percentages
-      ScrollTrigger.create({
-        trigger: bar, start: 'top 80%',
-        onEnter: () => !prefersReduced && gsap.to(bar, { width: `${target}%`, duration: 1.2, ease: 'power3.out' })
+    // Skills progress fill (JS)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          const bar = entry.target;
+          const target = bar.getAttribute('data-progress');
+          bar.style.width = `${target}%`;
+          observer.unobserve(bar);
+        }
       });
-    });
+    }, { threshold: 0.8 }); // Trigger when 80% of element is visible
+
+    $$('.progress').forEach(bar => observer.observe(bar));
 
     // Modals animation
     const openButtons = $$('.open-modal');
@@ -622,17 +599,13 @@
     modals.forEach(m => m.addEventListener('click', e => (e.target === m) && closeModal(m)));
 
     // Button press micro-interaction
-    $$('button, .open-modal').forEach(b=>{
-      b.addEventListener('mousedown', () => gsap.to(b, { y:1.5, scale:.99, duration:.08 }));
-      b.addEventListener('mouseup',   () => gsap.to(b, { y:0, scale:1,   duration:.12 }));
-      b.addEventListener('mouseleave',() => gsap.to(b, { y:0, scale:1,   duration:.12 }));
-    });
-
-    // Cursor grow on interactive elements
-    $$('a, button, .project').forEach(el=>{
-      el.addEventListener('mouseenter', ()=> { cRing.style.transform += ' scale(1.35)'; cRing.style.borderColor = '#A5B4FC'; });
-      el.addEventListener('mouseleave', ()=> { cRing.style.transform = cRing.style.transform.replace(' scale(1.35)',''); cRing.style.borderColor = 'rgba(199,210,254,.75)'; });
-    });
+    if (!isMobile) {
+      $$('button, .open-modal').forEach(b=>{
+        b.addEventListener('mousedown', () => gsap.to(b, { y:1.5, scale:.99, duration:.08 }));
+        b.addEventListener('mouseup',   () => gsap.to(b, { y:0, scale:1,   duration:.12 }));
+        b.addEventListener('mouseleave',() => gsap.to(b, { y:0, scale:1,   duration:.12 }));
+      });
+    }
   });
 
   // Contact form "thanks"
